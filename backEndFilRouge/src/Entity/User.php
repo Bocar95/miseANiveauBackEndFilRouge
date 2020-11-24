@@ -2,11 +2,14 @@
 
 namespace App\Entity;
 
+use App\Entity\Profil;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -56,27 +59,27 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(
+     *     message = "Ce Champ ne doit pas être vide."
+     * )
      */
     protected $password;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users_profil:read"})
-     * @Groups({"user:read"})
+     * @Groups({"users_profil:read","user:read"})
      */
     protected $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users_profil:read"})
-     * @Groups({"user:read"})
+     * @Groups({"users_profil:read","user:read"})
      */
     protected $nom;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users_profil:read"})
-     * @Groups({"user:read"})
+     * @Groups({"users_profil:read","user:read"})
      */
     protected $adresse;
 
@@ -88,8 +91,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users_profil:read"})
-     * @Groups({"user:read"})
+     * @Groups({"users_profil:read","user:read"})
      */
     protected $email;
 
@@ -97,6 +99,11 @@ class User implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private $isDeleted = false;
+
+    /**
+     * @ORM\Column(type="blob", nullable=true)
+     */
+    private $avatar;
 
     public function getId(): ?int
     {
@@ -239,6 +246,18 @@ class User implements UserInterface
     public function setIsDeleted(bool $isDeleted): self
     {
         $this->isDeleted = $isDeleted;
+
+        return $this;
+    }
+
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar($avatar): self
+    {
+        $this->avatar = $avatar;
 
         return $this;
     }

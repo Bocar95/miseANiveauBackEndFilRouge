@@ -9,7 +9,13 @@ use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
  * @ORM\Entity(repositoryClass=AdminRepository::class)
- * @ApiResource()
+ * @ApiResource(
+ *      collectionOperations={
+ *         "post"={"path"="/admin",
+ *         "route_name"="admin"
+ *      }
+ *      }
+ * )
  */
 class Admin extends User
 {
