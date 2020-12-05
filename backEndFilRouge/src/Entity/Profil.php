@@ -38,6 +38,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *                  "requirements"={"id"="\d+"},
  *                  "access_control"="(is_granted('ROLE_ADMIN'))",
  *                  "access_control_message"="Vous n'avez pas access à cette Ressource"
+ *          },
+ *         "delete"={"path"="/admin/profils/{id}",
+ *                  "requirements"={"id"="\d+"},
+ *                  "access_control"="(is_granted('ROLE_ADMIN'))",
+ *                  "access_control_message"="Vous n'avez pas access à cette Ressource"
  *          }
  *     }
  * )
@@ -54,7 +59,7 @@ class Profil
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"profil:read"})
+     * @Groups({"profil:read","user:read","get_admins:read","get_admin_by_id:read","get_apprenants:read","get_apprenant_by_id:read","get_formateurs:read","get_formateur_by_id:read","get_cm:read","get_cm_by_id:read"})
      */
     private $libelle;
 

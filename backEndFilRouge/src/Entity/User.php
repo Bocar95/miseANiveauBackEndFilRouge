@@ -20,25 +20,29 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\DiscriminatorMap({"user" = "User", "admin"="Admin", "formateur" = "Formateur", "apprenant" = "Apprenant", "cm"="Cm"})
  * @UniqueEntity("email",message="Cette adresse email est déja utilisé.")
- * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  * @ApiResource(
  *      collectionOperations={
  *         "get"={"path"="/admin/users",
  *                  "access_control"="(is_granted('ROLE_ADMIN'))",
  *                  "access_control_message"="Vous n'avez pas access à cette Ressource",
  *                  "normalization_context"={"groups"={"user:read"}}
- *               },
- *         "post"={"path"="/admin/users"}
+ *               }
  *     },
  *     itemOperations={
  *         "get"={"path"="/admin/users/{id}",
- *                "requirements"={"id"="\d+"}
+ *                "requirements"={"id"="\d+"},
+ *                  "access_control"="(is_granted('ROLE_ADMIN'))",
+ *                  "access_control_message"="Vous n'avez pas access à cette Ressource",
+ *                  "normalization_context"={"groups"={"user:read"}}
  *          },
- *         "put"={"path"="/admin/users/{id}",
- *                "requirements"={"id"="\d+"}
+ *         "delete"={"path"="/admin/users/{id}",
+ *                "requirements"={"id"="\d+"},
+ *                  "access_control"="(is_granted('ROLE_ADMIN'))",
+ *                  "access_control_message"="Vous n'avez pas access à cette Ressource"
  *          }
  *     }
  * )
+ * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  */
 class User implements UserInterface
 {
@@ -51,6 +55,9 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\NotBlank(
+     *     message = "Ce Champ ne doit pas être vide."
+     * )
      */
     protected $username;
 
@@ -67,43 +74,56 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users_profil:read","user:read"})
+     * @Assert\NotBlank(
+     *     message = "Ce Champ ne doit pas être vide."
+     * )
+     * @Groups({"users_profil:read","user:read","admin:read","get_admin_by_id:read","get_admins:read","get_apprenants:read","get_apprenant_by_id:read","get_formateurs:read","get_formateur_by_id:read","get_cm:read","get_cm_by_id:read"})
      */
     protected $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users_profil:read","user:read"})
+     * @Assert\NotBlank(
+     *     message = "Ce Champ ne doit pas être vide."
+     * )
+     * @Groups({"users_profil:read","user:read","admin:read","get_admin_by_id:read","get_admins:read","get_apprenants:read","get_apprenant_by_id:read","get_formateurs:read","get_formateur_by_id:read","get_cm:read","get_cm_by_id:read"})
      */
     protected $nom;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users_profil:read","user:read"})
+     * @Assert\NotBlank(
+     *     message = "Ce Champ ne doit pas être vide."
+     * )
+     * @Groups({"users_profil:read","user:read","admin:read","get_admin_by_id:read","get_admins:read","get_apprenants:read","get_apprenant_by_id:read","get_formateurs:read","get_formateur_by_id:read","get_cm:read","get_cm_by_id:read"})
      */
     protected $adresse;
 
     /**
      * @ORM\ManyToOne(targetEntity=Profil::class, inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"user:read","get_admins:read","get_admin_by_id:read","get_admins:read","get_apprenants:read","get_apprenant_by_id:read","get_formateurs:read","get_formateur_by_id:read","get_cm:read","get_cm_by_id:read"})
      */
     protected $profil;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users_profil:read","user:read"})
+     * @Assert\NotBlank(
+     *     message = "Ce Champ ne doit pas être vide."
+     * )
+     * @Groups({"users_profil:read","user:read","admin:read","get_admin_by_id:read","get_admins:read","get_apprenants:read","get_apprenant_by_id:read","get_formateurs:read","get_formateur_by_id:read","get_cm:read","get_cm_by_id:read"})
      */
     protected $email;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isDeleted = false;
+    protected $isDeleted = false;
 
     /**
      * @ORM\Column(type="blob", nullable=true)
      */
-    private $avatar;
+    protected $avatar;
 
     public function getId(): ?int
     {
